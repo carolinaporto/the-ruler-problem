@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Map of Intelligence</title>
+<meta name="description" content="An interactive map of intelligence: why “Have we reached AGI?” cannot be answered until we decide what counts as general intelligence. Three lenses — Psychology, Evolution, Computer Science.">
+<meta name="color-scheme" content="dark">
+<meta name="theme-color" content="#07090D">
+<!-- Favicon: a miniature of the site's own constellation — one crimson "AGI?"
+     node at the center, ringed by the three lens nodes in their own colors
+     (psychology / evolution / computer science). Inline SVG so the icon has
+     zero external dependency and works straight from file://. -->
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230C1016'/%3E%3Crect x='0.75' y='0.75' width='30.5' height='30.5' rx='6.25' fill='none' stroke='%23F3F0E8' stroke-opacity='0.14'/%3E%3Cline x1='16' y1='16.5' x2='16' y2='6.5' stroke='%23F3F0E8' stroke-opacity='0.45' stroke-width='1'/%3E%3Cline x1='16' y1='16.5' x2='24.66' y2='21.5' stroke='%23F3F0E8' stroke-opacity='0.45' stroke-width='1'/%3E%3Cline x1='16' y1='16.5' x2='7.34' y2='21.5' stroke='%23F3F0E8' stroke-opacity='0.45' stroke-width='1'/%3E%3Ccircle cx='16' cy='16.5' r='5.4' fill='none' stroke='%23A51C30' stroke-width='1.1' stroke-opacity='0.6'/%3E%3Ccircle cx='16' cy='6.5' r='2' fill='%23718EA7'/%3E%3Ccircle cx='24.66' cy='21.5' r='2' fill='%238A82A8'/%3E%3Ccircle cx='7.34' cy='21.5' r='2' fill='%237F9882'/%3E%3Ccircle cx='16' cy='16.5' r='3.1' fill='%23A51C30'/%3E%3C/svg%3E">
+<script>document.documentElement.classList.add('js');</script>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+
+<!-- Ambient layers: sparse star/network points and a scroll-progress hairline -->
+<div class="bg" aria-hidden="true"><svg id="bgStars" focusable="false"></svg></div>
+<div class="progress" aria-hidden="true"><i id="progressBar"></i></div>
+
+<header class="topbar">
+  <a class="brand" href="#hero" aria-label="Map of Intelligence / AGI — back to the opening question">MAP OF INTELLIGENCE <span aria-hidden="true">/</span> AGI</a>
+  <nav class="topnav" id="topnav" aria-label="Primary">
+    <a href="#hero" data-nav="overview">Overview</a>
+    <a href="#psychology" data-nav="psychology">Psychology</a>
+    <a href="#evolution" data-nav="evolution">Evolution</a>
+    <a href="#cs" data-nav="cs">Computer Science</a>
+    <a href="#sources" data-nav="sources">Sources</a>
+  </nav>
+</header>
+
+<nav class="rail" id="rail" aria-label="Sections of the journey"></nav>
+
+<main id="main">
+
+<!-- ======================================================== 01 OPENING -->
+<section id="hero" class="hero" data-nav="overview" data-title="Opening question" aria-labelledby="heroTitle">
+  <svg id="heroSky" class="hero-sky" viewBox="0 0 1000 760" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false"></svg>
+  <div class="hero-inner">
+    <p class="eyebrow"><span class="num">01</span> Opening question</p>
+    <h1 id="heroTitle" class="hero-q">Have we reached AGI?</h1>
+    <p class="hero-sub" id="heroSub">Before we answer, we need to decide what “general intelligence” means.</p>
+
+    <div class="answers" id="heroAnswers" role="group" aria-label="Give your first answer">
+      <button type="button" class="btn-answer" data-answer="yes">Yes</button>
+      <button type="button" class="btn-answer" data-answer="no">No</button>
+      <button type="button" class="btn-answer" data-answer="unsure">I’m not sure</button>
+    </div>
+
+    <div class="answer-chip" id="heroChip" hidden>
+      <span class="chip-label">Your first answer</span>
+      <strong id="heroChipValue"></strong>
+      <button type="button" class="link-btn" id="heroChange">change</button>
+    </div>
+
+    <p class="hero-next" id="heroNext" aria-live="polite">Now let’s move the line.</p>
+    <a class="cue" id="heroCue" href="#line">Continue <span aria-hidden="true">↓</span></a>
+  </div>
+  <p class="hero-coords" aria-hidden="true">NETWORK 01 &nbsp;·&nbsp; 25 NODES &nbsp;·&nbsp; UNLABELLED</p>
+</section>
+
+<!-- ======================================================== 02 MOVE THE LINE -->
+<section id="line" class="sec" data-nav="overview" data-title="Move the line" aria-labelledby="lineTitle">
+  <header class="sec-head reveal">
+    <p class="eyebrow"><span class="num">02</span> Move the line</p>
+    <h2 id="lineTitle" class="q">Where do we draw the line?</h2>
+    <p class="lede">The technology below doesn’t change. Only the definition does. Choose one and watch where the boundary of “general” goes.</p>
+  </header>
+
+  <div class="line-layout">
+    <div class="def-picker reveal" role="group" aria-label="Choose a definition of AGI">
+      <p class="label">Choose a definition of AGI</p>
+      <div class="def-list" id="defList"></div>
+    </div>
+
+    <div class="spectrum-wrap reveal">
+      <p class="tag tag-conceptual">Conceptual map — positions are illustrative, not quantitative scores.</p>
+      <div class="spectrum" id="spectrum" role="img" aria-label="A spectrum from narrow and specialized to general and adaptive, with six capabilities and a movable threshold line. Positions are illustrative."></div>
+      <div class="spec-tags" id="specTags" aria-live="polite"></div>
+      <p class="legend-line">Bright markers sit on the far side of the bar; a crimson ring marks what the definition weights most. The map shows where each definition puts the bar — not where any AI system stands.</p>
+    </div>
+  </div>
+
+  <div class="def-detail reveal" id="defDetail" aria-live="polite"></div>
+  <p class="coda serif reveal">Same technology. Different threshold. Different answer.</p>
+</section>
+
+<!-- ======================================================== 03 CONSTELLATION -->
+<section id="map" class="sec sec-map" data-nav="overview" data-title="The map" aria-labelledby="mapTitle">
+  <header class="sec-head reveal">
+    <p class="eyebrow"><span class="num">03</span> The map of intelligence</p>
+    <h2 id="mapTitle" class="q">One question. Three lenses.</h2>
+    <p class="lede">Each lens asks something different of the word “general.”</p>
+  </header>
+
+  <div class="map-controls reveal">
+    <div class="lens-filter" role="group" aria-label="Filter the map by lens" id="lensFilter">
+      <button type="button" class="chip" data-lens="all" aria-pressed="true">All</button>
+      <button type="button" class="chip" data-lens="psych" aria-pressed="false"><i class="dot dot-psych"></i>Psychology</button>
+      <button type="button" class="chip" data-lens="evo" aria-pressed="false"><i class="dot dot-evo"></i>Evolution</button>
+      <button type="button" class="chip" data-lens="cs" aria-pressed="false"><i class="dot dot-cs"></i>Computer Science</button>
+    </div>
+    <p class="lens-desc" id="lensDesc" aria-live="polite"></p>
+  </div>
+
+  <div class="map-layout reveal">
+    <div class="map-stage" id="mapStage">
+      <svg id="mapSvg" class="map-svg" viewBox="0 0 1000 760" role="group" aria-label="Constellation of concepts across three lenses. Use Tab to move between nodes, Enter or Space to open one, Escape to close." focusable="false"></svg>
+      <div class="tip" id="tip" role="tooltip" hidden></div>
+      <p class="map-hint" id="mapHint">select a node to inspect</p>
+      <ul class="legend" aria-label="Legend">
+        <li><i class="lg lg-lens"></i>Lens</li>
+        <li><i class="lg lg-concept"></i>Concept</li>
+        <li><i class="lg lg-bench"></i>Evidence that bridges lenses</li>
+        <li><i class="lg lg-sel"></i>Selected path</li>
+      </ul>
+    </div>
+    <aside class="panel" id="mapPanel" aria-label="Node detail" aria-live="polite"></aside>
+  </div>
+
+  <details class="node-index reveal" id="nodeIndexWrap" open>
+    <summary>Index of nodes <span class="muted">(same map, as a list)</span></summary>
+    <div class="node-index-list" id="nodeIndex"></div>
+  </details>
+</section>
+
+<!-- ======================================================== 04 PSYCHOLOGY -->
+<section id="psychology" class="lens lens-psych" data-nav="psychology" data-title="Psychology lens" aria-labelledby="psychTitle">
+  <div class="lens-head reveal">
+    <div>
+      <p class="eyebrow"><span class="num">04</span> Lens 01 · Psychology</p>
+      <h2 id="psychTitle" class="q">Psychology asks: is there something general underneath performance?</h2>
+      <button type="button" class="link-btn" data-lens-return="psych">↑ See this lens on the map</button>
+    </div>
+    <svg class="lens-mini" data-mini="psych" viewBox="0 0 380 280" role="group" aria-label="This lens as a small network: click a concept to open it on the map" focusable="false"></svg>
+  </div>
+
+  <article class="block reveal" id="gBlock" aria-labelledby="gTitle">
+    <p class="tag">Concept · g factor</p>
+    <h3 id="gTitle" class="serif block-q">Does broad performance imply general intelligence?</h3>
+    <div class="g-layout">
+      <div class="g-figure">
+        <svg id="gTree" class="g-tree" viewBox="0 0 1000 600" role="group" aria-label="Branching diagram: general ability g above five broad abilities, above ten example tasks. Select a broad ability for details." focusable="false"></svg>
+        <div class="g-controls">
+          <button type="button" class="btn-ghost" id="manifoldBtn" aria-pressed="false">Reveal the positive manifold</button>
+          <span class="tag tag-conceptual">Conceptual diagram — not data</span>
+        </div>
+      </div>
+      <div class="g-text">
+        <p>In psychometrics, <strong>g</strong> is a statistical factor inferred from the positive correlations among performance on different cognitive tasks. It is not a single “AGI test.”</p>
+        <p class="callout">One implication for AI: broad success on one benchmark is less informative than a coherent pattern of capability across different kinds of tasks.</p>
+        <p class="caveat"><span class="caveat-mark">Not claimed here</span> We have not established a g factor for AI systems. Read this as a question and an analogy, not a finding.</p>
+        <div class="g-detail" id="gDetail" aria-live="polite"></div>
+      </div>
+    </div>
+  </article>
+
+  <article class="block reveal" id="gfgcBlock" aria-labelledby="gfgcTitle">
+    <p class="tag">Concept · Fluid vs. crystallized</p>
+    <h3 id="gfgcTitle" class="serif block-q">What can you figure out when training did not give you the answer?</h3>
+
+    <div class="gfgc">
+      <div class="gfgc-col gf">
+        <p class="tag">Gf</p>
+        <h4>Fluid intelligence</h4>
+        <ul class="plain">
+          <li>solving unfamiliar problems</li>
+          <li>abstraction</li>
+          <li>transfer</li>
+          <li>reasoning when stored knowledge helps less</li>
+        </ul>
+        <button type="button" class="conn" data-goto-node="arc"><span class="conn-k">Conceptual connection</span> ARC-AGI <span aria-hidden="true">→</span></button>
+      </div>
+      <div class="gfgc-mid" aria-hidden="true"><span>vs.</span></div>
+      <div class="gfgc-col gc">
+        <p class="tag">Gc</p>
+        <h4>Crystallized intelligence</h4>
+        <ul class="plain">
+          <li>accumulated knowledge</li>
+          <li>vocabulary / factual knowledge</li>
+          <li>learned conceptual structures</li>
+        </ul>
+        <button type="button" class="conn" data-goto-node="hle"><span class="conn-k">Conceptual connection</span> HLE / knowledge benchmarks <span aria-hidden="true">→</span></button>
+      </div>
+    </div>
+    <p class="caveat"><span class="caveat-mark">Analogy</span> This organises evidence; it does not claim psychometric equivalence between humans and AI.</p>
+
+    <div class="profile">
+      <div class="profile-head">
+        <p class="tag tag-conceptual">AI profile evolution — conceptual, not psychometric scores</p>
+        <div class="seg" role="group" aria-label="Choose a period">
+          <button type="button" data-era="early" aria-pressed="true">Earlier language models</button>
+          <button type="button" data-era="frontier" aria-pressed="false">Frontier systems</button>
+        </div>
+      </div>
+      <div class="bars">
+        <div class="bar-row"><span class="bar-label">Gc-like: breadth of knowledge</span><div class="bar"><i class="ghost" id="barGcGhost"></i><i class="fill fill-gc" id="barGc"></i></div></div>
+        <div class="bar-row"><span class="bar-label">Gf-like: adapting to novel tasks</span><div class="bar"><i class="ghost" id="barGfGhost"></i><i class="fill fill-gf" id="barGf"></i></div></div>
+      </div>
+      <p class="profile-text" id="profileText" aria-live="polite"></p>
+    </div>
+    <blockquote class="pull"><p>If AI becomes broad in knowledge <em>and</em> strong at novel problem solving, what is still missing from “general intelligence”?</p></blockquote>
+  </article>
+
+  <article class="block reveal" id="metaBlock" aria-labelledby="metaTitle">
+    <p class="tag">Concept · Metacognition</p>
+    <h3 id="metaTitle" class="serif block-q">Knowing when you know, when you do not, when to revise, and when to ask for help.</h3>
+    <div class="meta-layout">
+      <div class="meta-fig" id="metaFig">
+        <svg viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true" focusable="false">
+          <line class="ml" x1="50" y1="50" x2="50" y2="12"/><line class="ml" x1="50" y1="50" x2="16" y2="80"/><line class="ml" x1="50" y1="50" x2="84" y2="80"/>
+        </svg>
+        <div class="meta-core" aria-hidden="true">metacognition</div>
+        <button type="button" class="meta-sat" data-meta="reliability" style="--x:50%;--y:10%" aria-pressed="false">reliability</button>
+        <button type="button" class="meta-sat" data-meta="horizon" style="--x:16%;--y:82%" aria-pressed="false">long-horizon work</button>
+        <button type="button" class="meta-sat" data-meta="autonomy" style="--x:84%;--y:82%" aria-pressed="false">autonomy</button>
+      </div>
+      <div class="meta-text" id="metaText" aria-live="polite"></div>
+    </div>
+  </article>
+</section>
+
+<!-- ======================================================== 05 EVOLUTION -->
+<section id="evolution" class="lens lens-evo" data-nav="evolution" data-title="Evolution lens" aria-labelledby="evoTitle">
+  <div class="lens-head reveal">
+    <div>
+      <p class="eyebrow"><span class="num">05</span> Lens 02 · Evolution</p>
+      <h2 id="evoTitle" class="q">Evolution asks: what is intelligence for?</h2>
+      <button type="button" class="link-btn" data-lens-return="evo">↑ See this lens on the map</button>
+    </div>
+    <svg class="lens-mini" data-mini="evo" viewBox="0 0 380 280" role="group" aria-label="This lens as a small network: click a concept to open it on the map" focusable="false"></svg>
+  </div>
+
+  <blockquote class="statement reveal">
+    <p>Intelligence may be less about knowing many answers than remaining adaptive when the world surprises you.</p>
+    <footer class="tag tag-conceptual">A synthesis and framing for this map — not a direct quotation.</footer>
+  </blockquote>
+
+  <article class="block reveal" id="loopBlock" aria-labelledby="loopTitle">
+    <p class="tag">Diagram · The adaptation loop</p>
+    <h3 id="loopTitle" class="serif block-q">What can you figure out when the world surprises you?</h3>
+    <div class="loop-layout">
+      <div class="loop-fig" id="loopFig" role="group" aria-label="Adaptation loop with seven steps. Select a step to read it.">
+        <svg viewBox="0 0 100 100" aria-hidden="true" focusable="false">
+          <circle class="orbit orbit-out" cx="50" cy="50" r="42" pathLength="1"/>
+          <circle class="orbit orbit-in" cx="50" cy="50" r="30"/>
+        </svg>
+        <div class="loop-center" aria-hidden="true"><span>adaptation<br>under uncertainty</span></div>
+      </div>
+      <div class="loop-text" id="loopText" aria-live="polite"></div>
+    </div>
+  </article>
+
+  <article class="block reveal" id="mirrorBlock" aria-labelledby="mirrorTitle">
+    <p class="tag">Diagram · Two histories</p>
+    <h3 id="mirrorTitle" class="serif block-q">No system starts from zero.</h3>
+    <div class="mirror" id="mirror">
+      <div class="mirror-col-head human">Human</div>
+      <div class="mirror-bridge-head"><span class="badge">Analogy, not equivalence</span></div>
+      <div class="mirror-col-head ai">AI</div>
+    </div>
+    <p class="bridge-line serif">Both enter new situations with a history.</p>
+    <div class="pair-note" id="pairNote" aria-live="polite"></div>
+  </article>
+
+  <article class="block reveal" id="cultureBlock" aria-labelledby="cultureTitle">
+    <p class="tag">Concept · Culture</p>
+    <h3 id="cultureTitle" class="serif block-q">Is human intelligence actually individual?</h3>
+    <div class="chains">
+      <div class="chain-wrap">
+        <p class="chain-title">Human</p>
+        <ol class="chain" id="chainHuman"></ol>
+      </div>
+      <div class="chain-wrap">
+        <p class="chain-title">AI system</p>
+        <ol class="chain" id="chainAi"></ol>
+      </div>
+    </div>
+    <div class="chain-detail" id="chainDetail" aria-live="polite"><p class="muted">select a step to expand it</p></div>
+
+    <div class="distinct">
+      <p class="tag">Two accounts of what makes human intelligence distinctive</p>
+      <div class="seg" role="group" aria-label="Choose an account">
+        <button type="button" data-distinct="cultural" aria-pressed="true">Cultural intelligence</button>
+        <button type="button" data-distinct="capacity" aria-pressed="false">Expanded information capacity</button>
+      </div>
+      <div class="distinct-text" id="distinctText" aria-live="polite"></div>
+    </div>
+
+    <blockquote class="pull"><p>If tools and accumulated culture count when evaluating humans, what should count as “the AI system” when evaluating AGI?</p></blockquote>
+    <a class="cue cue-inline" href="#boundary">See it in the ARC-AGI-3 harness result <span aria-hidden="true">↓</span></a>
+  </article>
+</section>
+
+<!-- ======================================================== 06 COMPUTER SCIENCE -->
+<section id="cs" class="lens lens-cs" data-nav="cs" data-title="Computer Science lens" aria-labelledby="csTitle">
+  <div class="lens-head reveal">
+    <div>
+      <p class="eyebrow"><span class="num">06</span> Lens 03 · Computer Science</p>
+      <h2 id="csTitle" class="q">Computer science asks: what can the system actually do?</h2>
+      <button type="button" class="link-btn" data-lens-return="cs">↑ See this lens on the map</button>
+    </div>
+    <svg class="lens-mini" data-mini="cs" viewBox="0 0 380 280" role="group" aria-label="This lens as a small network: click a concept to open it on the map" focusable="false"></svg>
+  </div>
+
+  <blockquote class="statement reveal">
+    <p>AGI is not one axis. A system can be extraordinary on one dimension and fragile on another.</p>
+  </blockquote>
+
+  <div class="hex-layout reveal">
+    <div class="hex-fig" id="hexFig" role="group" aria-label="Six dimensions of capability. Select one to read its definition, evidence and limits.">
+      <svg viewBox="0 0 100 100" aria-hidden="true" focusable="false" id="hexSvg"></svg>
+      <div class="hex-core" aria-hidden="true">no single<br>score</div>
+    </div>
+    <div class="hex-panel panel" id="hexPanel" aria-live="polite"></div>
+  </div>
+  <p class="tag tag-conceptual hex-note reveal">Conceptual frame — the six axes deliberately carry no numeric values. Do not collapse them into one AGI score.</p>
+</section>
+
+<!-- ======================================================== 07 EVIDENCE -->
+<section id="evidence" class="sec sec-evidence" data-nav="cs" data-title="Evidence" aria-labelledby="evTitle">
+  <header class="sec-head reveal">
+    <p class="eyebrow"><span class="num">07</span> Evidence</p>
+    <h2 id="evTitle" class="q">Four ways of looking at the same machine.</h2>
+    <p class="lede">Each benchmark asks a different question. None of them, alone, answers “is it general?”</p>
+  </header>
+  <div class="orbit-layout reveal">
+    <div class="orbit-fig" id="orbitFig" role="group" aria-label="Four benchmarks arranged on an orbit. Select one to expand it.">
+      <svg viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true" focusable="false">
+        <ellipse class="orbit orbit-out" cx="50" cy="50" rx="41" ry="38"/>
+        <ellipse class="orbit orbit-in" cx="50" cy="50" rx="24" ry="22"/>
+      </svg>
+      <div class="orbit-core" aria-hidden="true">AGI?</div>
+    </div>
+    <article class="card evidence-card" id="evCard" aria-live="polite"></article>
+  </div>
+</section>
+
+<!-- ======================================================== 08 BOUNDARY -->
+<section id="boundary" class="sec sec-boundary" data-nav="cs" data-title="System boundary" aria-labelledby="bTitle">
+  <header class="sec-head reveal">
+    <p class="eyebrow"><span class="num">08</span> The system boundary</p>
+    <h2 id="bTitle" class="q">What exactly are we calling “the intelligent system”?</h2>
+  </header>
+
+  <div class="b-layout reveal">
+    <div class="b-fig">
+      <svg id="ringsSvg" viewBox="0 0 400 400" role="group" aria-label="Six concentric rings around the model: context, memory and state, tools, scaffold, environment." focusable="false"></svg>
+    </div>
+    <div class="b-side">
+      <p class="label">Choose the system boundary</p>
+      <div class="seg seg-stack" role="group" aria-label="System boundary" id="boundaryToggle">
+        <button type="button" data-mode="standard" aria-pressed="true">Model + standard harness</button>
+        <button type="button" data-mode="adapter" aria-pressed="false">Model + provider adapter / state preservation</button>
+      </div>
+
+      <div class="score" aria-live="polite">
+        <span class="score-prefix" id="scorePrefix" aria-hidden="true"></span><span class="score-num" id="scoreNum">62.7</span><span class="score-unit">%</span>
+      </div>
+      <p class="score-cap">GPT-6 Astra on ARC-AGI-3 — best observed
+        <a class="src" href="https://arcprize.org/results/openai-gpt-6-astra" target="_blank" rel="noopener noreferrer" aria-label="Source: ARC Prize GPT-6 Astra results (opens in a new tab)">source ↗</a>
+      </p>
+      <p class="score-note" id="scoreNote"></p>
+      <p class="same serif">Same underlying model family. Different system boundary. Very different observed performance.</p>
+    </div>
+  </div>
+
+  <div class="ring-explorer reveal">
+    <p class="label">What might belong to “the system”? <span class="muted">Select a ring.</span></p>
+    <div class="ring-list" id="ringList" role="group" aria-label="Rings of the system"></div>
+    <p class="ring-text" id="ringText" aria-live="polite"></p>
+  </div>
+
+  <blockquote class="pull reveal"><p>Should AGI be a property of a neural network, or of a complete cognitive system?</p></blockquote>
+  <p class="body-narrow reveal">Humans are not isolated brains either: we operate with language, memory aids, tools, institutions and other people. That is a question about <em>evaluation boundaries</em> — not a claim that the human and AI cases are equivalent.
+    <button type="button" class="link-btn" data-goto="cultureBlock">↑ Back to culture</button>
+  </p>
+  <p class="body-narrow muted reveal">Sources: <a href="https://arcprize.org/results/openai-gpt-6-astra" target="_blank" rel="noopener noreferrer">ARC Prize results ↗</a> · <a href="https://arcprize.org/blog/astra" target="_blank" rel="noopener noreferrer">ARC Prize analysis ↗</a>. Benchmark evidence, not proof of AGI.</p>
+</section>
+
+<!-- ======================================================== 09 VERDICT -->
+<section id="verdict" class="sec sec-verdict" data-nav="overview" data-title="Same AI, different verdict" aria-labelledby="vTitle">
+  <header class="sec-head reveal">
+    <p class="eyebrow"><span class="num">09</span> Five criteria</p>
+    <h2 id="vTitle" class="q">Same AI. Different definition. Different verdict.</h2>
+    <p class="lede">Evidence sits differently under each criterion. This page deliberately does not stamp the system “AGI” or “not AGI.”</p>
+  </header>
+  <div class="verdict-layout reveal">
+    <div class="radial" id="radial" role="group" aria-label="Five criteria around frontier AI. Select one to read the state of the evidence.">
+      <svg viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true" focusable="false" id="radialSvg"></svg>
+      <div class="radial-core"><span class="tag">Center</span><strong>FRONTIER AI</strong></div>
+    </div>
+    <article class="card verdict-card" id="vCard" aria-live="polite"></article>
+  </div>
+</section>
+
+<!-- ======================================================== 10 BUILDER -->
+<section id="builder" class="sec sec-builder" data-nav="overview" data-title="Build your definition" aria-labelledby="bldTitle">
+  <header class="sec-head reveal">
+    <p class="eyebrow"><span class="num">10</span> Your turn</p>
+    <h2 id="bldTitle" class="q">What would YOU require before calling a system AGI?</h2>
+    <p class="lede">Toggle the criteria you would insist on. The summary follows fixed rules — no scoring, no AI.</p>
+  </header>
+  <div class="builder reveal">
+    <fieldset class="crit" id="crit">
+      <legend class="label">Criteria <span class="muted">(choose any)</span></legend>
+      <div class="crit-list" id="critList"></div>
+      <div class="crit-actions">
+        <button type="button" class="btn-ghost" id="builderReset">Reset</button>
+        <span class="presets">Start from:
+          <button type="button" class="link-btn" data-preset="capability">capability</button>
+          <button type="button" class="link-btn" data-preset="adaptation">adaptation</button>
+          <button type="button" class="link-btn" data-preset="agency">agency</button>
+        </span>
+      </div>
+    </fieldset>
+
+    <div class="b-out">
+      <svg id="builderSvg" class="builder-svg" viewBox="0 0 600 470" role="img" aria-label="A small constellation that builds itself from the criteria you select, connecting them to the three lenses." focusable="false"></svg>
+      <div class="summary" id="summary" aria-live="polite">
+        <p class="tag" id="sumType"></p>
+        <div id="sumText"></div>
+        <p class="sum-evidence" id="sumEvidence"></p>
+        <p class="sum-always">There is no single universally accepted AGI threshold.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ======================================================== 11 FINAL -->
+<section id="final" class="hero hero-final" data-nav="overview" data-title="Final question" aria-labelledby="finalTitle">
+  <svg id="finalSky" class="hero-sky" viewBox="0 0 1000 760" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false"></svg>
+  <div class="hero-inner">
+    <p class="eyebrow"><span class="num">11</span> Final question</p>
+    <h2 id="finalTitle" class="hero-q">Have we reached AGI?</h2>
+
+    <div class="answers" id="finalAnswers" role="group" aria-label="Your answer after exploring the map">
+      <button type="button" class="btn-answer" data-final="yes">Yes</button>
+      <button type="button" class="btn-answer" data-final="no">No</button>
+      <button type="button" class="btn-answer" data-final="depends">It depends</button>
+    </div>
+
+    <div class="compare" id="compare" aria-live="polite">
+      <p class="cmp-row"><span class="chip-label">Your first answer</span> <strong id="cmpFirst">—</strong></p>
+      <p class="cmp-row" id="cmpFinalRow" hidden><span class="chip-label">Your answer after exploring the map</span> <strong id="cmpFinal"></strong></p>
+      <p class="cmp-note" id="cmpNote"></p>
+    </div>
+
+    <blockquote class="reframe" id="reframe">
+      <p class="reframe-1">Perhaps the more useful question is not:</p>
+      <p class="reframe-2 serif">“Have we reached AGI?”</p>
+      <p class="reframe-1">but:</p>
+      <p class="reframe-3 serif">“What kind of generality have we achieved — and what is still missing?”</p>
+    </blockquote>
+    <a class="cue" href="#sources">Explore sources <span aria-hidden="true">↓</span></a>
+  </div>
+</section>
+
+<!-- ======================================================== SOURCES -->
+<section id="sources" class="sec sec-sources" data-nav="sources" data-title="Sources" aria-labelledby="srcTitle">
+  <header class="sec-head reveal">
+    <p class="eyebrow"><span class="num">12</span> Sources</p>
+    <h2 id="srcTitle" class="q">Where this comes from.</h2>
+    <p class="lede">Benchmark figures were checked against their source pages on Sept. 21, 2026. Every number on this page carries a link to where it was reported. Diagrams marked <em>conceptual</em>, <em>illustrative</em>, or <em>analogy, not equivalence</em> are interpretations built for this map, not measurements.</p>
+  </header>
+
+  <div class="src-groups" id="srcGroups"></div>
+
+  <div class="note-claims reveal">
+    <h3 class="serif">How to read the claims</h3>
+    <ul class="plain">
+      <li><strong>Reported</strong> means a figure a named source publishes on a named date. It is evidence “on this benchmark,” not proof of a construct.</li>
+      <li><strong>Conceptual / illustrative</strong> marks positions and bar lengths that show relationships, not quantities.</li>
+      <li><strong>Analogy, not equivalence</strong> marks every comparison between human cognition and AI systems.</li>
+      <li>Consciousness is treated as a separate, unresolved question that these benchmarks do not measure.</li>
+      <li>For g, fluid and crystallized intelligence, and the positive manifold, the map uses standard psychometrics framing with the background references above; nothing here claims a psychometric score for an AI system.</li>
+    </ul>
+  </div>
+</section>
+
+</main>
+
+<footer class="footer">
+  <p>The Ruler Problem — a Map of Intelligence · GENED 1201: Foundations of NeuroAI · Harvard, Fall 2026</p>
+  <p class="muted">Plain HTML, CSS and JavaScript. No network requests. <a href="#hero">Back to the top ↑</a></p>
+</footer>
+
+<script src="content.js"></script>
+<script src="script.js"></script>
+</body>
+</html>
